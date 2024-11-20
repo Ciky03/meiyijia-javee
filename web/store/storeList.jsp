@@ -280,7 +280,7 @@
                 <h3 id="formTitle">添加门店</h3>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
-            <form id="storeForm"  action="${pageContext.request.contextPath}/store/save" method="POST" onsubmit="saveStore(event)">
+            <form id="storeForm"  method="POST" onsubmit="saveStore(event)">
                 <input type="hidden" id="storeId" name="id">
                 <div class="form-group">
                     <label for="storeName">门店名称</label>
@@ -328,17 +328,50 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // 在现有script标签开始处添加分页变量
+        // 分页变量
         let currentPage = 1;
         let pageSize = 10;
         let totalPages = 1;
 
-        // 修改保存方法，使用AJAX调用Servlet
+        // 保存
         function saveStore(event) {
-            return true;
-        }
+            event.preventDefault(); // 阻止表单默认提交
 
-        // 修改删除方法
+            // 获取表单数据
+            const formData = {
+                id: document.getElementById('storeId').value,
+                name: document.getElementById('storeName').value,
+                address: document.getElementById('storeAddress').value,
+                manager: document.getElementById('storeManager').value,
+                phone: document.getElementById('storePhone').value,
+                sales: document.getElementById('storeSales').value,
+                inventory: document.getElementById('storeInventory').value
+            };
+
+            // 发送AJAX请求
+            $.ajax({
+                url: '${pageContext.request.contextPath}/store/save',
+                type: 'POST',
+                contentType: 'application/json;charset=UTF-8',
+                data: JSON.stringify(formData),
+                success: function(response) {
+                    if (response.success) {
+                        alert('保存成功！');
+                        closeModal();
+                        loadStores(); // 重新加载门店列表
+                    } else {
+                        alert('保存失败：' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('保存失败，请重试');
+                    console.error('保存门店数据失败:', error);
+                }
+            });
+
+            return false;        }
+
+        // 删除
         function deleteStore(storeId) {
             if (confirm('确定要删除这个门店吗？')) {
                 const form = document.createElement('form');
@@ -356,7 +389,7 @@
             }
         }
 
-        // 修改编辑方法
+        // 编辑
         function editStore(storeId) {
             $.ajax({
                 url: '${pageContext.request.contextPath}/store/get?id=' + storeId,
@@ -376,13 +409,13 @@
             });
         }
 
-        // 修改搜索方法，添加分页参数
+        // 搜索
         function searchStores() {
             const searchTerm = document.getElementById('searchInput').value;
             loadStores(searchTerm, currentPage);
         }
 
-        // 添加换页方法
+        // 换页
         function changePage(page) {
             if (page >= 1 && page <= totalPages) {
                 currentPage = page;
@@ -391,7 +424,7 @@
             }
         }
 
-        // 添加加载数据的通用方法
+        // 加载数据的通用方法
         function loadStores(searchTerm = '', page = 1) {
             $.ajax({
                 url: '${pageContext.request.contextPath}/store/list',
@@ -417,7 +450,7 @@
             });
         }
 
-        // 添加更新分页控件的方法
+        // 更新分页控件
         function updatePagination() {
             document.getElementById('currentPage').textContent = currentPage;
             document.getElementById('totalPages').textContent = totalPages;
@@ -429,7 +462,7 @@
             nextBtn.disabled = currentPage >= totalPages;
         }
 
-        // 添加更新表格的方法
+        // 更新表格
         function updateTable(stores) {
             const tbody = document.getElementById('storeTableBody');
             tbody.innerHTML = '';
@@ -483,7 +516,7 @@
             }
         }
 
-        // 修改页面加载时的初始化
+        // 页面加载时的初始化
         document.addEventListener('DOMContentLoaded', function() {
             loadStores();
         });

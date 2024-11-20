@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 /**
  * @Author: ciky
- * @Description: TODO
+ * @Description: 数据库工具类
  * @DateTime: 2024/11/20 19:21
  **/
 public class DBUtil {
