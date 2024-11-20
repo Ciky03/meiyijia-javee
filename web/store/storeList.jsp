@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -475,20 +475,21 @@
 
             stores.forEach(store => {
                 const row = tbody.insertRow();
+                console.log(store)
                 row.dataset.storeId = store.id;
                 row.innerHTML = `
-                    <td>${store.id}</td>
-                    <td>${store.name}</td>
-                    <td>${store.address}</td>
-                    <td>${store.manager}</td>
-                    <td>${store.phone}</td>
-                    <td>¥${store.sales}</td>
-                    <td><span class="status-${store.inventory == '正常' ? 'good' : 'danger'}">${store.inventory}</span></td>
+                    <td>\${store.id}</td>
+                    <td>\${store.name}</td>
+                    <td>\${store.address}</td>
+                    <td>\${store.manager}</td>
+                    <td>\${store.phone}</td>
+                    <td>¥\${store.sales}</td>
+                    <td><span class="status-\${store.inventory === '正常' ? 'good' : 'danger'}">\${store.inventory}</span></td>
                     <td class="actions">
-                        <button class="btn btn-warning" onclick="editStore('${store.id}')">
+                        <button class="btn btn-warning" onclick="editStore('\${store.id}')">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-danger" onclick="deleteStore('${store.id}')">
+                        <button class="btn btn-danger" onclick="deleteStore('\${store.id}')">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
