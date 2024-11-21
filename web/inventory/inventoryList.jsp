@@ -464,10 +464,10 @@
 
             // 初始化数据
             loadStoreOptions();
+            loadItemOptions();
             loadInventoryData();
             loadHistoryData();
             checkWarnings();
-            loadItemOptions();
         });
 
         // 加载库存数据
@@ -583,11 +583,12 @@
         // 加载商品选项
         function loadItemOptions() {
             $.ajax({
-                url: '${pageContext.request.contextPath}/items/list',
+                url: '${pageContext.request.contextPath}/item/list',
                 method: 'GET',
                 success: function(response) {
                     const itemSelect = document.getElementById('itemSelect');
                     itemSelect.innerHTML = '<option value="">请选择商品</option>';
+                    console.log(response)
 
                     response.forEach(item => {
                         itemSelect.innerHTML += `<option value="\${item.id}">\${item.name}</option>`;
