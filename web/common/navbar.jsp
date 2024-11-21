@@ -20,7 +20,7 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/inventory/list">
+                <a href="${pageContext.request.contextPath}/inventory/inventoryList.jsp">
                     <i class="fas fa-boxes"></i>
                     <span>库存管理</span>
                 </a>
