@@ -533,7 +533,7 @@
                 success: function(response) {
                     const historyList = document.getElementById('historyList');
                     historyList.innerHTML = '';
-
+                    console.log(response)
                     response.forEach(record => {
                         const typeText = {
                             'in': '入库',
@@ -543,7 +543,7 @@
 
                         historyList.innerHTML += `
                             <div class="history-item">
-                                <div class="history-date">\${formatDate(record.date)}</div>
+                                <div class="history-date">\${formatDate(record.createTime)}</div>
                                 <div>\${record.itemName} - \${typeText} \${record.quantity}件</div>
                                 \${record.remark ? `<div>备注：\${record.remark}</div>` : ''}
                             </div>
