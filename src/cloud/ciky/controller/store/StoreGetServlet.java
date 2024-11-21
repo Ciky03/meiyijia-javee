@@ -1,4 +1,4 @@
-package cloud.ciky.controller;
+package cloud.ciky.controller.store;
 
 import cloud.ciky.module.Store;
 import cloud.ciky.utils.DBUtil;
