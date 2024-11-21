@@ -459,14 +459,18 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalPages = 1;
+
         // 修改数据操作相关的函数,改用Ajax调用后端API
         $(document).ready(function() {
 
             // 初始化数据
             loadStoreOptions();
             loadItemOptions();
-            loadInventoryData();
-            loadHistoryData();
+            // loadHistoryData();
             checkWarnings();
         });
 
@@ -483,6 +487,7 @@
                 success: function(response) {
                     const tbody = document.getElementById('inventoryTableBody');
                     tbody.innerHTML = '';
+                    console.log(response)
 
                     totalItems = response.total;
                     const totalPages = Math.ceil(totalItems / pageSize);
@@ -492,20 +497,20 @@
                     response.data.forEach(item => {
                         const row = tbody.insertRow();
                         row.innerHTML = `
-                            <td>\${item.id}</td>
-                            <td>\${item.name}</td>
+                            <td>\${item.itemId}</td>
+                            <td>\${item.itemName}</td>
                             <td>\${item.quantity}</td>
                             <td>\${item.warningThreshold}</td>
                             <td><span class="status-\${getStatusClass(item)}">\${getStatusText(item)}</span></td>
                             <td>\${formatDate(item.lastUpdate)}</td>
                             <td class="actions">
-                                <button class="btn btn-success" onclick="showModal('in', '\${item.id}')">
+                                <button class="btn btn-success" onclick="showModal('in', '\${item.itemId}')">
                                     <i class="fas fa-plus"></i>
                                 </button>
-                                <button class="btn btn-danger" onclick="showModal('out', '\${item.id}')">
+                                <button class="btn btn-danger" onclick="showModal('out', '\${item.itemId}')">
                                     <i class="fas fa-minus"></i>
                                 </button>
-                                <button class="btn btn-warning" onclick="showModal('return', '\${item.id}')">
+                                <button class="btn btn-warning" onclick="showModal('return', '\${item.itemId}')">
                                     <i class="fas fa-undo"></i>
                                 </button>
                             </td>
@@ -588,7 +593,6 @@
                 success: function(response) {
                     const itemSelect = document.getElementById('itemSelect');
                     itemSelect.innerHTML = '<option value="">请选择商品</option>';
-                    console.log(response)
 
                     response.forEach(item => {
                         itemSelect.innerHTML += `<option value="\${item.id}">\${item.name}</option>`;
@@ -859,7 +863,6 @@
 
             document.getElementById('storeName').textContent = storeName;
             mainContent.style.display = 'block';
-
             loadInventoryData(storeId);
             loadHistoryData(storeId);
             checkWarnings(storeId);
