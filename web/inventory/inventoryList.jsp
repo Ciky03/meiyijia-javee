@@ -473,7 +473,7 @@
         // 加载库存数据
         function loadInventoryData(storeId) {
             $.ajax({
-                url: '/api/inventory/list',
+                url: '${pageContext.request.contextPath}/inventory/list',
                 method: 'GET',
                 data: {
                     storeId: storeId,
@@ -522,7 +522,7 @@
         // 加载历史记录
         function loadHistoryData(storeId) {
             $.ajax({
-                url: '/api/inventory/history',
+                url: '${pageContext.request.contextPath}/inventory/history',
                 method: 'GET',
                 data: { storeId: storeId },
                 success: function(response) {
@@ -555,7 +555,7 @@
         // 检查库存预警
         function checkWarnings(storeId) {
             $.ajax({
-                url: '/api/inventory/warnings',
+                url: '${pageContext.request.contextPath}/inventory/warnings',
                 method: 'GET',
                 data: { storeId: storeId },
                 success: function(response) {
@@ -583,7 +583,7 @@
         // 加载商品选项
         function loadItemOptions() {
             $.ajax({
-                url: '/api/items/list',
+                url: '${pageContext.request.contextPath}/items/list',
                 method: 'GET',
                 success: function(response) {
                     const itemSelect = document.getElementById('itemSelect');
@@ -633,7 +633,7 @@
 
                 // 创建新商品
                 $.ajax({
-                    url: '/api/items/create',
+                    url: '${pageContext.request.contextPath}/items/create',
                     method: 'POST',
                     data: {
                         name: itemName,
@@ -663,7 +663,7 @@
             const remark = document.getElementById('remark').value;
 
             $.ajax({
-                url: '/api/inventory/update',
+                url: '${pageContext.request.contextPath}/inventory/update',
                 method: 'POST',
                 data: {
                     storeId: storeId,
@@ -715,7 +715,7 @@
             const searchTerm = document.getElementById('searchInput').value;
 
             $.ajax({
-                url: '/api/inventory/search',
+                url: '${pageContext.request.contextPath}/inventory/search',
                 method: 'GET',
                 data: {
                     storeId: storeId,
