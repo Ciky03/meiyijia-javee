@@ -13,6 +13,7 @@ public class FinanceRecord {
     private Integer storeId;
     private String type;
     private BigDecimal amount;
+    private Integer categoryId;
     private String category; // 存储分类名称
     private Date date;
     private String remark;
@@ -90,5 +91,13 @@ public class FinanceRecord {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 }

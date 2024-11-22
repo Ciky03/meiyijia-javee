@@ -16,6 +16,15 @@ import java.util.List;
  * @DateTime: 2024/11/22 19:33
  **/
 public class FinanceCategoryDao {
+    private Connection conn;
+
+     public FinanceCategoryDao() {
+    }
+
+    public FinanceCategoryDao(Connection conn) {
+        this.conn = conn;
+    }
+
     public List<FinanceCategory> getCategoriesByType(String type) throws SQLException {
         List<FinanceCategory> categories = new ArrayList<>();
 
@@ -42,5 +51,20 @@ public class FinanceCategoryDao {
         }
 
         return categories;
+    }
+
+    public int getCategoryIdByName(String name) throws SQLException {
+        String sql = "SELECT id FROM finance_category WHERE name = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id");
+                }
+                return 0;
+            }
+        }
     }
 }
