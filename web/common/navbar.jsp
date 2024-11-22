@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/finance/list">
+                <a href="${pageContext.request.contextPath}/finance/financeList.jsp">
                     <i class="fas fa-chart-line"></i>
                     <span>财务管理</span>
                 </a>
