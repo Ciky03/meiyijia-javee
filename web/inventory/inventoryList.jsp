@@ -624,12 +624,16 @@
 
             const type = document.getElementById('operationType').value;
             const itemSelect = document.getElementById('itemSelect');
-            let itemId = itemSelect.value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const remark = document.getElementById('remark').value;
 
+
+            let itemId = itemSelect.value;
             // 处理新商品
             if (itemId === 'new') {
                 const itemName = document.getElementById('itemName').value;
                 const warningThreshold = parseInt(document.getElementById('warningThreshold').value);
+
 
                 if (!itemName || !warningThreshold) {
                     alert('请填写完整的商品信息');
@@ -647,7 +651,7 @@
                     },
                     success: function(response) {
                         itemId = response.itemId;
-                        updateInventory(storeId, itemId, type);
+                        updateInventory(storeId, itemId, type,quantity,remark);
                     },
                     error: function(xhr, status, error) {
                         console.error('创建商品失败:', error);
@@ -656,16 +660,20 @@
                     }
                 });
             } else {
-                updateInventory(storeId, itemId, type);
+                updateInventory(storeId, itemId, type,null,null);
             }
 
             closeModal();
         }
 
         // 更新库存
-        function updateInventory(storeId, itemId, type) {
-            const quantity = parseInt(document.getElementById('quantity').value);
-            const remark = document.getElementById('remark').value;
+        function updateInventory(storeId, itemId, type,quantity,remark) {
+            if(quantity == null){
+                quantity = parseInt(document.getElementById('quantity').value);
+            }
+            if(remark == null){
+                remark = document.getElementById('remark').value;
+            }
 
             $.ajax({
                 url: '${pageContext.request.contextPath}/inventory/update',

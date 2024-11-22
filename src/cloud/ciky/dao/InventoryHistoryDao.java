@@ -44,6 +44,7 @@ public class InventoryHistoryDao {
         return histories;
     }
 
+    // 添加操作历史记录
     public void insert(InventoryHistory history) throws SQLException {
         String sql = "INSERT INTO inventory_history (store_id, item_id, operation_type, quantity, remark) " +
                     "VALUES (?, ?, ?, ?, ?)";
@@ -67,3 +68,19 @@ public class InventoryHistoryDao {
         }
     }
 }
+
+
+//    public void addHistory(int storeId, int itemId, String operationType, int quantity, String remark)
+//            throws SQLException {
+//        String sql = "INSERT INTO inventory_history (store_id, item_id, operation_type, quantity, remark) " +
+//                    "VALUES (?, ?, ?, ?, ?)";
+//
+//        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            stmt.setInt(1, storeId);
+//            stmt.setInt(2, itemId);
+//            stmt.setString(3, operationType);
+//            stmt.setInt(4, quantity);
+//            stmt.setString(5, remark);
+//            stmt.executeUpdate();
+//        }
+//    }
