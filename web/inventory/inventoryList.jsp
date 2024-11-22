@@ -470,8 +470,6 @@
             // 初始化数据
             loadStoreOptions();
             loadItemOptions();
-            // loadHistoryData();
-            checkWarnings();
         });
 
         // 加载库存数据
@@ -560,7 +558,7 @@
         // 检查库存预警
         function checkWarnings(storeId) {
             $.ajax({
-                url: '${pageContext.request.contextPath}/inventory/warnings',
+                url: '${pageContext.request.contextPath}/inventory/warning',
                 method: 'GET',
                 data: { storeId: storeId },
                 success: function(response) {
