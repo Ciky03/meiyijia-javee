@@ -638,7 +638,7 @@
 
                 // 创建新商品
                 $.ajax({
-                    url: '${pageContext.request.contextPath}/items/create',
+                    url: '${pageContext.request.contextPath}/item/create',
                     method: 'POST',
                     data: {
                         name: itemName,
