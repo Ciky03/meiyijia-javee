@@ -1,11 +1,14 @@
 package cloud.ciky.dao;
 
+import cloud.ciky.module.StoreInventory;
 import cloud.ciky.utils.DBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: ciky
@@ -61,6 +64,70 @@ public class InventoryDao {
             stmt.setInt(3, itemId);
             stmt.executeUpdate();
         }
+    }
+
+    public int getTotalCount(int storeId, String searchTerm) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM store_inventory si " +
+                    "JOIN item i ON si.item_id = i.id " +
+                    "WHERE si.store_id = ? " +
+                    (searchTerm != null && !searchTerm.trim().isEmpty()
+                        ? "AND i.name LIKE ?" : "");
+
+        try (Connection conn = DBUtil.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, storeId);
+            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                stmt.setString(2, "%" + searchTerm.trim() + "%");
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        }
+    }
+
+    public List<StoreInventory> searchItems(int storeId, String searchTerm, int page, int pageSize)
+            throws SQLException {
+        List<StoreInventory> items = new ArrayList<>();
+
+        String sql = "SELECT i.id, i.name, si.quantity, si.warning_threshold, si.last_update " +
+                    "FROM store_inventory si " +
+                    "JOIN item i ON si.item_id = i.id " +
+                    "WHERE si.store_id = ? " +
+                    (searchTerm != null && !searchTerm.trim().isEmpty()
+                        ? "AND i.name LIKE ? " : "") +
+                    "ORDER BY i.name " +
+                    "LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBUtil.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            int paramIndex = 1;
+            stmt.setInt(paramIndex++, storeId);
+
+            if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+                stmt.setString(paramIndex++, "%" + searchTerm.trim() + "%");
+            }
+
+            stmt.setInt(paramIndex++, pageSize);
+            stmt.setInt(paramIndex, (page - 1) * pageSize);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    StoreInventory item = new StoreInventory();
+                    item.setItemId(rs.getInt("id"));
+                    item.setItemName(rs.getString("name"));
+                    item.setQuantity(rs.getInt("quantity"));
+                    item.setWarningThreshold(rs.getInt("warning_threshold"));
+                    item.setLastUpdate(rs.getTimestamp("last_update"));
+                    items.add(item);
+                }
+            }
+        }
+
+        return items;
     }
 
 }

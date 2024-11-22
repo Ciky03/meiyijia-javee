@@ -750,17 +750,17 @@
                     response.data.forEach(item => {
                         const row = tbody.insertRow();
                         row.innerHTML = `
-                            <td>\${item.id}</td>
-                            <td>\${item.name}</td>
+                            <td>\${item.itemId}</td>
+                            <td>\${item.itemName}</td>
                             <td>\${item.quantity}</td>
                             <td>\${item.warningThreshold}</td>
                             <td><span class="status-\${getStatusClass(item)}">\${getStatusText(item)}</span></td>
                             <td>\${formatDate(item.lastUpdate)}</td>
                             <td class="actions">
-                                <button class="btn btn-success" onclick="showModal('in', '\${item.id}')">
+                                <button class="btn btn-success" onclick="showModal('in', '\${item.itemId}')">
                                     <i class="fas fa-plus"></i>
                                 </button>
-                                <button class="btn btn-danger" onclick="showModal('out', '\${item.id}')">
+                                <button class="btn btn-danger" onclick="showModal('out', '\${item.itemId}')">
                                     <i class="fas fa-minus"></i>
                                 </button>
                                 <button class="btn btn-warning" onclick="showModal('return', '\${item.id}')">
