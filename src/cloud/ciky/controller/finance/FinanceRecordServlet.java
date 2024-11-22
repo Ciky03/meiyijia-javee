@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: ciky
@@ -29,11 +31,25 @@ public class FinanceRecordServlet extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         int storeId = Integer.parseInt(request.getParameter("storeId"));
+        int page = Integer.parseInt(request.getParameter("page"));
+        int pageSize = Integer.parseInt(request.getParameter("pageSize"));
+
 
         try{
             FinanceRecordDao recordDAO = new FinanceRecordDao();
-            List<FinanceRecord> records = recordDAO.getRecordsByStore(storeId);
-            response.getWriter().write(gson.toJson(records));
+
+             // 获取总记录数
+            int total = recordDAO.getTotalCount(storeId);
+
+            // 获取分页数据
+            List<FinanceRecord> records = recordDAO.getRecordsByStore(storeId,page,pageSize);
+
+            // 构建返回结果
+            Map<String, Object> result = new HashMap<>();
+            result.put("total", total);
+            result.put("data", records);
+
+            response.getWriter().write(gson.toJson(result));
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -234,6 +234,44 @@
             gap: 10px;
             margin-top: 20px;
         }
+
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background: #f5f5f5;
+        }
+
+        .pagination button:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .pagination select {
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #pageInfo {
+            font-size: 14px;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -299,6 +337,21 @@
                         <tbody id="recordsTableBody">
                         </tbody>
                     </table>
+
+                    <div class="pagination">
+                        <button class="btn" onclick="changePage(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <span id="pageInfo">第 <span id="currentPage">1</span>/<span id="totalPages">1</span> 页</span>
+                        <button class="btn" onclick="changePage(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <select id="pageSizeSelect" onchange="changePageSize()">
+                            <option value="10">10条/页</option>
+                            <option value="20">20条/页</option>
+                            <option value="50">50条/页</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div id="reportTab" style="display: none;">
@@ -471,18 +524,31 @@
                 }
             });
         }
+        // 添加分页相关变量
+        let currentPage = 1;
+        let pageSize = 10;
+        let totalItems = 0;
 
         // 加载收支记录
         function loadRecords(storeId) {
             $.ajax({
                 url: '${pageContext.request.contextPath}/finance/records',
                 method: 'GET',
-                data: { storeId: storeId },
+                  data: {
+                    storeId: storeId,
+                    page: currentPage,
+                    pageSize: pageSize
+                },
                 success: function(response) {
                     const tbody = document.getElementById('recordsTableBody');
                     tbody.innerHTML = '';
 
-                    response.forEach(record => {
+                    totalItems = response.total;
+                    const totalPages = Math.ceil(totalItems / pageSize);
+                    document.getElementById('totalPages').textContent = totalPages;
+                    document.getElementById('currentPage').textContent = currentPage;
+
+                    response.data.forEach(record => {
                         const row = tbody.insertRow();
                         row.innerHTML = `
                             <td>\${record.date}</td>
@@ -501,6 +567,24 @@
                 }
             });
         }
+
+        // 添加分页相关函数
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            const totalPages = Math.ceil(totalItems / pageSize);
+
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                loadRecords(document.getElementById('storeSelect').value);
+            }
+        }
+
+        function changePageSize() {
+            pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+            currentPage = 1;
+            loadRecords(document.getElementById('storeSelect').value);
+        }
+
 
         // 加载月度报表
         function loadMonthlyReport(storeId) {

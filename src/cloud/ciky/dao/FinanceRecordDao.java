@@ -16,7 +16,23 @@ import java.util.List;
  * @DateTime: 2024/11/22 19:41
  **/
 public class FinanceRecordDao {
-     public List<FinanceRecord> getRecordsByStore(int storeId) throws SQLException {
+    public int getTotalCount(int storeId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM finance_record WHERE store_id = ?";
+
+        try (Connection conn = DBUtil.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, storeId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+                return 0;
+            }
+        }
+    }
+
+     public List<FinanceRecord> getRecordsByStore(int storeId,int page,int pageSize) throws SQLException {
         List<FinanceRecord> records = new ArrayList<>();
 
         String sql = "SELECT fr.id, fr.store_id, fr.type, fr.amount, " +
@@ -25,11 +41,14 @@ public class FinanceRecordDao {
                     "FROM finance_record fr " +
                     "JOIN finance_category fc ON fr.category_id = fc.id " +
                     "WHERE fr.store_id = ? " +
-                    "ORDER BY fr.record_date DESC, fr.create_time DESC";
+                    "ORDER BY fr.record_date DESC, fr.create_time DESC "+
+                    "LIMIT ? OFFSET ?";
 
          try (Connection conn = DBUtil.getConnection()) {
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, storeId);
+            stmt.setInt(2, pageSize);
+            stmt.setInt(3, (page - 1) * pageSize);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
