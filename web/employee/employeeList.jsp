@@ -294,21 +294,12 @@
         let totalPages = 1;
 
         $(document).ready(function() {
-            $("#navbar").load("../common/navbar.html", function() {
-                const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-                if (isCollapsed) {
-                    document.body.classList.add('nav-collapsed');
-                    const sidebar = document.getElementById('sidebar');
-                    if (sidebar) {
-                        sidebar.classList.add('collapsed');
-                    }
-                }
-            });
 
             loadStoreOptions();
             loadEmployees(currentPage);
         });
 
+        // 加载门店选项
         function loadStoreOptions() {
             // 替换为Ajax调用
             $.ajax({
@@ -328,12 +319,13 @@
             });
         }
 
+        // 加载员工信息
         function loadEmployees(page) {
             const searchTerm = document.getElementById('searchInput').value;
             
             // 替换为Ajax调用
             $.ajax({
-                url: '${pageContext.request.contextPath}/employees',
+                url: '${pageContext.request.contextPath}/employee/list',
                 method: 'GET',
                 data: {
                     page: page,
@@ -386,7 +378,7 @@
 
             // 替换为Ajax调用
             $.ajax({
-                url: '${pageContext.request.contextPath}/employees' + (employeeId ? `\${employeeId}` : ''),
+                url: '${pageContext.request.contextPath}/employee' + (employeeId ? `\${employeeId}` : ''),
                 method: employeeId ? 'PUT' : 'POST',
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
@@ -404,7 +396,7 @@
             if (confirm('确定要删除这个员工吗？')) {
                 // 替换为Ajax调用
                 $.ajax({
-                    url: `${pageContext.request.contextPath}/employees/\${employeeId}`,
+                    url: `${pageContext.request.contextPath}/employee/\${employeeId}`,
                     method: 'DELETE',
                     success: function(response) {
                         loadEmployees(currentPage);
@@ -430,7 +422,7 @@
                 <td>\${employee.name}</td>
                 <td>\${employee.phone}</td>
                 <td>\${employee.storeName}</td>
-                <td>\${employee.date}</td>
+                <td>\${employee.hireDate}</td>
                 <td class="actions">
                     <button class="btn btn-warning" onclick="editEmployee('\${employee.id}')">
                         <i class="fas fa-edit"></i>
@@ -447,7 +439,7 @@
 
             // 通过Ajax获取员工数据
             $.ajax({
-                url: `${pageContext.request.contextPath}/employees/${employeeId}`,
+                url: `${pageContext.request.contextPath}/employee/\${employeeId}`,
                 method: 'GET',
                 success: function(employee) {
                     document.getElementById('employeeId').value = employeeId;
