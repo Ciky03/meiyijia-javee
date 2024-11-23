@@ -312,14 +312,14 @@
         function loadStoreOptions() {
             // 替换为Ajax调用
             $.ajax({
-                url: '/api/stores',
+                url: '${pageContext.request.contextPath}/store/list',
                 method: 'GET',
                 success: function(response) {
                     const storeSelect = document.getElementById('employeeStore');
                     storeSelect.innerHTML = '<option value="">请选择门店</option>';
                     
-                    response.forEach(store => {
-                        storeSelect.innerHTML += `<option value="${store.id}">${store.name}</option>`;
+                    response.data.forEach(store => {
+                        storeSelect.innerHTML += `<option value="\${store.id}">\${store.name}</option>`;
                     });
                 },
                 error: function(xhr, status, error) {
@@ -333,7 +333,7 @@
             
             // 替换为Ajax调用
             $.ajax({
-                url: '/api/employees',
+                url: '${pageContext.request.contextPath}/employees',
                 method: 'GET',
                 data: {
                     page: page,
@@ -359,7 +359,7 @@
         }
 
         function updatePagination() {
-            document.getElementById('pageInfo').textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
+            document.getElementById('pageInfo').textContent = `第 \${currentPage} 页 / 共 \${totalPages} 页`;
             document.getElementById('prevBtn').disabled = currentPage === 1;
             document.getElementById('nextBtn').disabled = currentPage === totalPages;
         }
@@ -386,7 +386,7 @@
 
             // 替换为Ajax调用
             $.ajax({
-                url: '/api/employees' + (employeeId ? `/${employeeId}` : ''),
+                url: '${pageContext.request.contextPath}/employees' + (employeeId ? `\${employeeId}` : ''),
                 method: employeeId ? 'PUT' : 'POST',
                 data: JSON.stringify(formData),
                 contentType: 'application/json',
@@ -404,7 +404,7 @@
             if (confirm('确定要删除这个员工吗？')) {
                 // 替换为Ajax调用
                 $.ajax({
-                    url: `/api/employees/${employeeId}`,
+                    url: `${pageContext.request.contextPath}/employees/\${employeeId}`,
                     method: 'DELETE',
                     success: function(response) {
                         loadEmployees(currentPage);
@@ -417,7 +417,77 @@
         }
 
         // 其他函数保持不变
-        // ...
+        function addTableRow(employee) {
+            const tbody = document.getElementById('employeeTableBody');
+            const row = tbody.insertRow();
+            row.dataset.employeeId = employee.id;
+            row.innerHTML = generateTableRow(employee);
+        }
+
+        function generateTableRow(employee) {
+            return `
+                <td>\${employee.id}</td>
+                <td>\${employee.name}</td>
+                <td>\${employee.phone}</td>
+                <td>\${employee.storeName}</td>
+                <td>\${employee.date}</td>
+                <td class="actions">
+                    <button class="btn btn-warning" onclick="editEmployee('\${employee.id}')">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteEmployee('\${employee.id}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+        }
+
+        function editEmployee(employeeId) {
+            document.getElementById('formTitle').textContent = '编辑员工';
+
+            // 通过Ajax获取员工数据
+            $.ajax({
+                url: `${pageContext.request.contextPath}/employees/${employeeId}`,
+                method: 'GET',
+                success: function(employee) {
+                    document.getElementById('employeeId').value = employeeId;
+                    document.getElementById('employeeName').value = employee.name;
+                    document.getElementById('employeePhone').value = employee.phone;
+                    document.getElementById('employeeStore').value = employee.storeId;
+                    document.getElementById('employeeDate').value = employee.date;
+
+                    document.getElementById('employeeModal').style.display = 'block';
+                },
+                error: function(xhr, status, error) {
+                    console.error('获取员工数据失败:', error);
+                }
+            });
+        }
+
+        function showAddModal() {
+            document.getElementById('formTitle').textContent = '添加员工';
+            document.getElementById('employeeForm').reset();
+            document.getElementById('employeeId').value = '';
+            document.getElementById('employeeModal').style.display = 'block';
+        }
+
+        function searchEmployees() {
+            currentPage = 1; // 重置到第一页
+            loadEmployees(currentPage);
+        }
+
+        function closeModal() {
+            document.getElementById('employeeModal').style.display = 'none';
+            document.getElementById('employeeForm').reset();
+        }
+
+        // 点击弹窗外部关闭弹窗
+        window.onclick = function(event) {
+            const modal = document.getElementById('employeeModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
 
     </script>
 </body>

@@ -295,14 +295,14 @@
 
         function loadStoreOptions() {
             $.ajax({
-                url: '/api/stores',
+                url: '${pageContext.request.contextPath}/store/list',
                 method: 'GET',
                 success: function(response) {
                     const storeSelect = document.getElementById('storeSelect');
                     storeSelect.innerHTML = '<option value="">选择门店</option>';
 
-                    response.forEach(store => {
-                        storeSelect.innerHTML += `<option value="${store.id}">${store.name}</option>`;
+                    response.data.forEach(store => {
+                        storeSelect.innerHTML += `<option value="\${store.id}">\${store.name}</option>`;
                     });
                 },
                 error: function(xhr, status, error) {
@@ -320,7 +320,7 @@
             for (let i = -4; i <= 4; i++) {
                 const weekNum = currentWeek + i;
                 const selected = i === 0 ? 'selected' : '';
-                weekSelect.innerHTML += `<option value="${weekNum}" ${selected}>第${weekNum}周</option>`;
+                weekSelect.innerHTML += `<option value="\${weekNum}" \${selected}>第\${weekNum}周</option>`;
             }
         }
 
@@ -331,7 +331,7 @@
             if (!storeId) return;
 
             $.ajax({
-                url: '/api/schedules',
+                url: '${pageContext.request.contextPath}/schedules',
                 method: 'GET',
                 data: {
                     storeId: storeId,
@@ -364,7 +364,7 @@
 
         function loadEmployeeOptions(storeId) {
             $.ajax({
-                url: '/api/employees',
+                url: '${pageContext.request.contextPath}/employees',
                 method: 'GET',
                 data: { storeId: storeId },
                 success: function(response) {
@@ -372,7 +372,7 @@
                     employeeSelect.innerHTML = '';
 
                     response.forEach(employee => {
-                        employeeSelect.innerHTML += `<option value="${employee.id}">${employee.name}</option>`;
+                        employeeSelect.innerHTML += `<option value="\${employee.id}">\${employee.name}</option>`;
                     });
                 },
                 error: function(xhr, status, error) {
@@ -393,7 +393,7 @@
                 .map(option => option.value);
 
             $.ajax({
-                url: '/api/schedules',
+                url: '${pageContext.request.contextPath}/schedules',
                 method: 'POST',
                 data: JSON.stringify({
                     storeId: storeId,
@@ -420,7 +420,7 @@
             const shiftType = document.getElementById('shiftType').value;
 
             $.ajax({
-                url: '/api/schedules',
+                url: '${pageContext.request.contextPath}/schedules',
                 method: 'DELETE',
                 data: {
                     storeId: storeId,
@@ -445,12 +445,12 @@
             // 填充排班数据
             scheduleData.forEach(schedule => {
                 const cell = document.querySelector(
-                    `td[onclick="showScheduleModal('${schedule.dayOfWeek}', '${schedule.shiftType}')"]`
+                    `td[onclick="showScheduleModal('\${schedule.dayOfWeek}', '\${schedule.shiftType}')"]`
                 );
 
                 if (cell) {
                     cell.innerHTML = schedule.employees.map(employee =>
-                        `<div class="shift shift-${schedule.shiftType}">${employee.name}</div>`
+                        `<div class="shift shift-\${schedule.shiftType}">\${employee.name}</div>`
                     ).join('');
                 }
             });
