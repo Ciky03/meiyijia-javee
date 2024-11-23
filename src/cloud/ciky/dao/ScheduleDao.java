@@ -17,11 +17,11 @@ import java.util.List;
  * @DateTime: 2024/11/23 14:01
  **/
 public class ScheduleDao {
-public List<Schedule> getSchedules(int storeId, int weekNumber, int dayOfWeek, String shiftType)
+    public List<Schedule> getSchedules(int storeId, int weekNumber, int dayOfWeek, String shiftType)
             throws SQLException {
         List<Schedule> schedules = new ArrayList<>();
         String sql = "SELECT * FROM schedule WHERE store_id = ? AND week_number = ? " +
-                    "AND day_of_week = ? AND shift_type = ?";
+                "AND day_of_week = ? AND shift_type = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -54,7 +54,7 @@ public List<Schedule> getSchedules(int storeId, int weekNumber, int dayOfWeek, S
         }
 
         String sql = "INSERT INTO schedule (store_id, employee_id, week_number, day_of_week, shift_type) " +
-                    "VALUES (?, ?, ?, ?, ?)";
+                "VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -71,7 +71,7 @@ public List<Schedule> getSchedules(int storeId, int weekNumber, int dayOfWeek, S
 
     private boolean hasScheduleConflict(Schedule schedule) throws SQLException {
         String sql = "SELECT COUNT(*) FROM schedule WHERE employee_id = ? " +
-                    "AND week_number = ? AND day_of_week = ? AND shift_type = ?";
+                "AND week_number = ? AND day_of_week = ? AND shift_type = ?";
 
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -89,4 +89,20 @@ public List<Schedule> getSchedules(int storeId, int weekNumber, int dayOfWeek, S
         }
     }
 
+    public void deleteSchedules(int storeId, int weekNumber, int dayOfWeek, String shiftType)
+            throws SQLException {
+        String sql = "DELETE FROM schedule WHERE store_id = ? AND week_number = ? " +
+                "AND day_of_week = ? AND shift_type = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, storeId);
+            stmt.setInt(2, weekNumber);
+            stmt.setInt(3, dayOfWeek);
+            stmt.setString(4, shiftType);
+
+            stmt.executeUpdate();
+        }
+    }
 }

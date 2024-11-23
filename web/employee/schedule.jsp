@@ -455,8 +455,8 @@
             const shiftType = document.getElementById('shiftType').value;
 
             $.ajax({
-                url: '${pageContext.request.contextPath}/schedules',
-                method: 'DELETE',
+                url: '${pageContext.request.contextPath}/schedule/delete',
+                method: 'POST',
                 data: {
                     storeId: storeId,
                     weekNum: weekNum,
