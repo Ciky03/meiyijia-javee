@@ -47,4 +47,46 @@ public List<Schedule> getSchedules(int storeId, int weekNumber, int dayOfWeek, S
 
         return schedules;
     }
+
+    public void saveSchedule(Schedule schedule) throws SQLException {
+        if (hasScheduleConflict(schedule)) {
+            throw new SQLException("该员工在此时段已有排班");
+        }
+
+        String sql = "INSERT INTO schedule (store_id, employee_id, week_number, day_of_week, shift_type) " +
+                    "VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, schedule.getStoreId());
+            stmt.setInt(2, schedule.getEmployeeId());
+            stmt.setInt(3, schedule.getWeekNumber());
+            stmt.setInt(4, schedule.getDayOfWeek());
+            stmt.setString(5, schedule.getShiftType());
+
+            stmt.executeUpdate();
+        }
+    }
+
+    private boolean hasScheduleConflict(Schedule schedule) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM schedule WHERE employee_id = ? " +
+                    "AND week_number = ? AND day_of_week = ? AND shift_type = ?";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, schedule.getEmployeeId());
+            stmt.setInt(2, schedule.getWeekNumber());
+            stmt.setInt(3, schedule.getDayOfWeek());
+            stmt.setString(4, schedule.getShiftType());
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+            return false;
+        }
+    }
+
 }

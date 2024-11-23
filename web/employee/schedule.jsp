@@ -293,6 +293,7 @@
             loadSchedule();
         });
 
+        // 加载门店选项
         function loadStoreOptions() {
             $.ajax({
                 url: '${pageContext.request.contextPath}/store/list',
@@ -311,6 +312,7 @@
             });
         }
 
+        // 加载周数选项
         function loadWeekOptions() {
             const weekSelect = document.getElementById('weekSelect');
             const currentDate = new Date();
@@ -347,6 +349,7 @@
             });
         }
 
+        // 展示弹窗
         function showScheduleModal(dayOfWeek, shiftType) {
             const storeId = document.getElementById('storeSelect').value;
             if (!storeId) {
@@ -391,6 +394,7 @@
             });
         }
 
+        // 根据门店id加载员工选项
         function loadEmployeeOptions(storeId) {
             $.ajax({
                 url: '${pageContext.request.contextPath}/employee/store',
@@ -423,7 +427,7 @@
                 .map(option => option.value);
 
             $.ajax({
-                url: '${pageContext.request.contextPath}/schedules',
+                url: '${pageContext.request.contextPath}/schedule/save',
                 method: 'POST',
                 data: JSON.stringify({
                     storeId: storeId,
