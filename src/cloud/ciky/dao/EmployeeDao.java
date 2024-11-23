@@ -167,4 +167,32 @@ public List<Employee> getEmployees(int offset, int pageSize, String searchTerm) 
         }
     }
 
+     public boolean deleteEmployee(int id) throws SQLException {
+        String sql = "UPDATE employee SET status = 0 WHERE id = ? AND status = 1";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean hasActiveSchedule(int employeeId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM schedule WHERE employee_id = ? " +
+                    "AND week_number >= WEEK(CURRENT_DATE)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, employeeId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
 }
