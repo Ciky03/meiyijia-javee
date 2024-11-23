@@ -378,11 +378,11 @@
 
             // 替换为Ajax调用
             $.ajax({
-                url: '${pageContext.request.contextPath}/employee' + (employeeId ? `\${employeeId}` : ''),
+                url: '${pageContext.request.contextPath}/employee/save/' + (employeeId ? `\${employeeId}` : ''),
                 method: employeeId ? 'PUT' : 'POST',
                 data: JSON.stringify(formData),
-                contentType: 'application/json',
-                success: function(response) {
+                contentType: 'application/json;charset=UTF-8',  // 添加charset=UTF-8
+               success: function(response) {
                     closeModal();
                     loadEmployees(currentPage);
                 },
@@ -396,7 +396,7 @@
             if (confirm('确定要删除这个员工吗？')) {
                 // 替换为Ajax调用
                 $.ajax({
-                    url: `${pageContext.request.contextPath}/employee/\${employeeId}`,
+                    url: `${pageContext.request.contextPath}/employee/delete/\${employeeId}`,
                     method: 'DELETE',
                     success: function(response) {
                         loadEmployees(currentPage);
@@ -418,7 +418,7 @@
 
         function generateTableRow(employee) {
             return `
-                <td>\${employee.id}</td>
+                <td>\${employee.employeeNo}</td>
                 <td>\${employee.name}</td>
                 <td>\${employee.phone}</td>
                 <td>\${employee.storeName}</td>

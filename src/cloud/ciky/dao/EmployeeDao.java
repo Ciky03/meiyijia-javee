@@ -3,10 +3,8 @@ package cloud.ciky.dao;
 import cloud.ciky.module.Employee;
 import cloud.ciky.utils.DBUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -113,6 +111,60 @@ public List<Employee> getEmployees(int offset, int pageSize, String searchTerm) 
         }
 
         return null;
+    }
+
+     public boolean insertEmployee(Employee employee) throws SQLException {
+        String sql = "INSERT INTO employee (employee_no, name, phone, store_id, hire_date, status) " +
+                    "VALUES (?, ?, ?, ?, ?, 1)";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, employee.getEmployeeNo());
+            stmt.setString(2, employee.getName());
+            stmt.setString(3, employee.getPhone());
+            stmt.setInt(4, employee.getStoreId());
+            stmt.setDate(5, (Date) employee.getHireDate());
+
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean updateEmployee(Employee employee) throws SQLException {
+        String sql = "UPDATE employee SET name = ?, phone = ?, store_id = ?, " +
+                    "hire_date = ? WHERE id = ? AND status = 1";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, employee.getName());
+            stmt.setString(2, employee.getPhone());
+            stmt.setInt(3, employee.getStoreId());
+            stmt.setDate(4, (Date) employee.getHireDate());
+            stmt.setInt(5, employee.getId());
+
+            return stmt.executeUpdate() > 0;
+        }
+    }
+
+    public int getNextEmployeeSequence() {
+        String sql = "SELECT COUNT(*) + 1 FROM employee WHERE employee_no LIKE ?";
+        String today = new SimpleDateFormat("yyyyMMdd").format(new java.util.Date());
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, today + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 1;
+        }
     }
 
 }
