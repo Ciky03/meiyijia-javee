@@ -332,7 +332,7 @@
             if (!storeId) return;
 
             $.ajax({
-                url: '${pageContext.request.contextPath}/schedules',
+                url: '${pageContext.request.contextPath}/schedule/list',
                 method: 'GET',
                 data: {
                     storeId: storeId,

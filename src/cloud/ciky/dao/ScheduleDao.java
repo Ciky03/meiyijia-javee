@@ -1,6 +1,7 @@
 package cloud.ciky.dao;
 
 import cloud.ciky.module.Schedule;
+import cloud.ciky.module.ScheduleView;
 import cloud.ciky.utils.DBUtil;
 
 import java.sql.Connection;
