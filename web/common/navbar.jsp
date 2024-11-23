@@ -32,11 +32,18 @@
                 </a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/employee/list">
+                <a href="${pageContext.request.contextPath}/employee/employeeList.jsp">
                     <i class="fas fa-users"></i>
                     <span>员工管理</span>
                 </a>
             </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/employee/schedule.jsp">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>排班管理</span>
+                </a>
+            </li>
+
         </ul>
     </div>
 </div>
