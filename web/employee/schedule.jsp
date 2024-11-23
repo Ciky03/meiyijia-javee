@@ -324,6 +324,7 @@
             }
         }
 
+        // 加载排班表
         function loadSchedule() {
             const storeId = document.getElementById('storeSelect').value;
             const weekNum = document.getElementById('weekSelect').value;
@@ -362,9 +363,37 @@
             document.getElementById('scheduleModal').style.display = 'block';
         }
 
+        // 加载已存在的排班数据
+       function loadExistingSchedule(storeId, dayOfWeek, shiftType) {
+            const weekNum = document.getElementById('weekSelect').value;
+
+            $.ajax({
+                url: '${pageContext.request.contextPath}/schedule/load',
+                method: 'GET',
+                data: {
+                    storeId: storeId,
+                    weekNum: weekNum,
+                    dayOfWeek: dayOfWeek,
+                    shiftType: shiftType
+                },
+                success: function(employeeIds) {
+                    const employeeSelect = document.getElementById('employeeSelect');
+
+                    // 选中已排班的员工
+                    Array.from(employeeSelect.options).forEach(option => {
+                        option.selected = employeeIds.includes(parseInt(option.value));
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('加载排班数据失败:', error);
+                    alert('加载排班数据失败: ' + error);
+                }
+            });
+        }
+
         function loadEmployeeOptions(storeId) {
             $.ajax({
-                url: '${pageContext.request.contextPath}/employees',
+                url: '${pageContext.request.contextPath}/employee/store',
                 method: 'GET',
                 data: { storeId: storeId },
                 success: function(response) {
@@ -381,6 +410,7 @@
             });
         }
 
+         // 保存排班
         function saveSchedule(event) {
             event.preventDefault();
 
@@ -413,6 +443,7 @@
             });
         }
 
+        // 清除排班
         function clearSchedule() {
             const storeId = document.getElementById('storeSelect').value;
             const weekNum = document.getElementById('weekSelect').value;
@@ -438,6 +469,7 @@
             });
         }
 
+        // 更新排班显示
         function updateScheduleDisplay(scheduleData) {
             // 清空所有单元格
             document.querySelectorAll('.schedule-cell').forEach(cell => cell.innerHTML = '');
@@ -462,11 +494,13 @@
             return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
         }
 
+        // 关闭弹窗
         function closeModal() {
             document.getElementById('scheduleModal').style.display = 'none';
             document.getElementById('scheduleForm').reset();
         }
 
+        // 点击弹窗外部关闭弹窗
         window.onclick = function(event) {
             const modal = document.getElementById('scheduleModal');
             if (event.target == modal) {

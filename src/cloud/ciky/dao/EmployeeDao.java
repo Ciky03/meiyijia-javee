@@ -194,5 +194,31 @@ public List<Employee> getEmployees(int offset, int pageSize, String searchTerm) 
         }
         return false;
     }
+ public List<Employee> getEmployeesByStore(int storeId) throws SQLException {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT id, employee_no, name, phone, store_id, hire_date, status " +
+                    "FROM employee WHERE store_id = ? AND status = 1 " +
+                    "ORDER BY name";
 
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, storeId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setEmployeeNo(rs.getString("employee_no"));
+                employee.setName(rs.getString("name"));
+                employee.setPhone(rs.getString("phone"));
+                employee.setStoreId(rs.getInt("store_id"));
+                employee.setHireDate(rs.getDate("hire_date"));
+                employee.setStatus(rs.getInt("status"));
+                employees.add(employee);
+            }
+        }
+
+        return employees;
+    }
 }
