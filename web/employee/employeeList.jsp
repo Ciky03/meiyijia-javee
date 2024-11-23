@@ -439,14 +439,14 @@
 
             // 通过Ajax获取员工数据
             $.ajax({
-                url: `${pageContext.request.contextPath}/employee/\${employeeId}`,
+                url: `${pageContext.request.contextPath}/employee/get/\${employeeId}`,
                 method: 'GET',
                 success: function(employee) {
                     document.getElementById('employeeId').value = employeeId;
                     document.getElementById('employeeName').value = employee.name;
                     document.getElementById('employeePhone').value = employee.phone;
                     document.getElementById('employeeStore').value = employee.storeId;
-                    document.getElementById('employeeDate').value = employee.date;
+                    document.getElementById('employeeDate').value = employee.hireDate;
 
                     document.getElementById('employeeModal').style.display = 'block';
                 },

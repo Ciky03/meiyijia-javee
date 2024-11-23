@@ -87,4 +87,32 @@ public List<Employee> getEmployees(int offset, int pageSize, String searchTerm) 
         return 0;
     }
 
+    public Employee getEmployeeById(int id) throws SQLException {
+        String sql = "SELECT e.*, s.name as store_name FROM employee e " +
+                    "LEFT JOIN store s ON e.store_id = s.id " +
+                    "WHERE e.id = ? AND e.status = 1";
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Employee employee = new Employee();
+                employee.setId(rs.getInt("id"));
+                employee.setEmployeeNo(rs.getString("employee_no"));
+                employee.setName(rs.getString("name"));
+                employee.setPhone(rs.getString("phone"));
+                employee.setStoreId(rs.getInt("store_id"));
+                employee.setStoreName(rs.getString("store_name"));
+                employee.setHireDate(rs.getDate("hire_date"));
+                employee.setStatus(rs.getInt("status"));
+                return employee;
+            }
+        }
+
+        return null;
+    }
+
 }
